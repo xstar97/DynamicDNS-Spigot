@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,7 +52,17 @@ public class DynamicDNS extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getLogger().info("DynamicDNS " + this.getDescription().getVersion() + " has been Enabled");
-        getConfig().options().copyDefaults(true);
+        
+        // Check if config.yml exists
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir();
+        }
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            // Create default config.yml if it doesn't exist
+            getConfig().options().copyDefaults(true);
+        }
+
         saveConfig();
         loadServices();
         setupServices();
